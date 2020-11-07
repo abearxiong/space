@@ -1,0 +1,8 @@
+build/**
+config/**
+dist/**
+dll/**
+node_modules/**
+*.config.js
+test/**
+src/@types/**
