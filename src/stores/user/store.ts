@@ -30,6 +30,8 @@ export class UserStore extends StoreBase {
   @observable token =
     'U2FsdGVkX19B3HPXWKdG/BW8oy5ld+5t4WogKry+ve6B0RWRGtSjQlGr32zwr4nn7zBE9woFkj4mWNj8jZv1dg==';
 
+  @observable client_id = 'ccf21c3104b11fcd9219';
+  @observable client_id_local = '6d1f0f1a67b21e729050'; //  xx-space-local-dev
   /**
    * 登陆用户的用户信息
    */

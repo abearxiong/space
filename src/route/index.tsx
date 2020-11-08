@@ -4,6 +4,7 @@ import { Result, Button } from 'antd';
 import { ParentRoute, ChildrenRoute, RouteConfig } from '@/models';
 
 import { HomeRoute } from '../pages/home';
+import { UserRoutes } from '../pages/user';
 
 // 所有路由，父子路由并存
 let allRoute: RouteConfig[] = [];
@@ -16,7 +17,7 @@ const allRouteName: SimpleObject = {};
 const SigleRoute: ReactNodeArray = [];
 const SigleRouteName: PathRoute[] = [];
 
-allRoute = allRoute.concat([HomeRoute]);
+allRoute = allRoute.concat([HomeRoute, ...UserRoutes]);
 
 export type PathRoute = RouteConfig & {
   noTab?: boolean;
