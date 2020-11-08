@@ -6,7 +6,6 @@ import { lazy } from 'react';
 import { IconFont, IconFontType } from '@/components';
 import { ChildrenRoute } from '@/models';
 import React from 'react';
-import { DevOhterRoute } from './pages/dev-other';
 
 const DevRoute: ChildrenRoute = {
   path: '/dev',
@@ -21,4 +20,4 @@ const DevRoute: ChildrenRoute = {
 
 export { DevRoute };
 
-export const DevRoutes = [DevRoute, DevOhterRoute];
+export const DevRoutes = [DevRoute];

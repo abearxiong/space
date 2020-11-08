@@ -9,8 +9,8 @@
 
 import React from 'react';
 import { observer } from 'mobx-react';
-import Styles from './dev.less';
 import { useStore } from './store';
+import Styles from './dev.scss';
 
 const Dev = observer(() => {
   // 推荐按照顺序放置内容

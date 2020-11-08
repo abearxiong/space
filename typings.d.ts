@@ -27,3 +27,17 @@ declare module '*.svg' {
   const url: string;
   export default url;
 }
+
+// interface HTMLElementTagNameMap {
+//   'g-emoji': any;
+// }
+
+interface IntrinsicElements {
+  'g-emoji': any;
+}
+
+declare namespace JSX {
+  interface IntrinsicElements {
+    'g-emoji': any;
+  }
+}

@@ -52,15 +52,7 @@ const common = smp.wrap({
         // exclude: /node_modules/,
         use: [
           isMinicss,
-          {
-            loader: 'css-loader',
-            options: {
-              modules: {
-                localIdentName: '[name]__[local]___[hash:base64:5]',
-              },
-              importLoaders: 1,
-            },
-          },
+          importCssLoader,
           // 'postcss-loader',
           {
             loader: 'less-loader',

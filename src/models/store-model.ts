@@ -1,6 +1,13 @@
 import { Paging, PagingForm } from '@/models';
 import { FormCache } from '@/utils';
-import { observable, action, computed, autorun, toJS } from 'mobx';
+import {
+  observable,
+  action,
+  computed,
+  autorun,
+  toJS,
+  makeObservable,
+} from 'mobx';
 
 // TODO: 浏览器窗口，部分toJS获取数据，以后删除
 window.toJS = toJS;
@@ -28,6 +35,7 @@ class StoreBase<T = any> {
       this.getCache();
       this.setCache();
     }
+    // makeObservable(this);
     // console.log('storeBase constructor', this.SaveName);
   }
   /**

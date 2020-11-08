@@ -2,7 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import 'antd/dist/antd.css';
 import './index.scss';
+import '@github/g-emoji-element';
 import App from './App';
+// for observer batching
+// import 'mobx-react-lite/batchingForReactDom';
 import SentryContext from '@/modules/error/sentry-context';
 import Fallback from '@/modules/error/sentry-fallback';
 import Sentry from '@/modules/error/sentry';

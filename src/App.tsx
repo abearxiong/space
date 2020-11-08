@@ -5,7 +5,6 @@ import {
   Route,
   useHistory,
 } from 'react-router-dom';
-
 import { ConfigProvider, message } from 'antd';
 import zhCN from 'antd/es/locale/zh_CN';
 import { UseRequestProvider } from 'ahooks';
