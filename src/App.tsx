@@ -21,6 +21,8 @@ message.config({
   maxCount: 1,
 });
 
+window.message = message;
+
 const App = () => {
   const history = useHistory();
   return (

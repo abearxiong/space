@@ -1,0 +1,34 @@
+.Edit {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.Form {
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  :global {
+    .ant-form-item {
+      margin-bottom: 1px;
+    }
+  }
+  > div:nth-child(2) {
+    flex-grow: 1;
+    :global {
+      .ant-form-item-control-input {
+        flex-grow: 1;
+        .ant-form-item-control-input-content {
+          flex-grow: 1;
+          height: 100%;
+        }
+      }
+      .ace_scrollbar .ace_scrollbar-h {
+        height: 0px; // 22px
+        margin-top: -20px;
+      }
+      .ace_scrollbar .ace_scrollbar-v {
+        width: 1px;
+      }
+    }
+  }
+}

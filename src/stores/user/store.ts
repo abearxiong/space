@@ -14,12 +14,17 @@ export type PageInfo = {
   hasNextPage: boolean;
   hasPreviousPage: false;
   startCursor: string;
+  [key: string]: any;
 };
 export type SpaceData = {
   node: {
     id: string;
   } & SimpleObject;
 };
+/**
+ * name 仓库名字
+ * owner 仓库拥有者
+ */
 export type UserRepository = {
   name: string; // 仓库名字
   owner: string; // 仓库拥有者
@@ -44,7 +49,12 @@ export class UserStore extends StoreBase {
     this.setCache();
     makeObservable(this, {
       spaceDatas: observable,
-      setSpaceDatas: action,
+      setSpaceDatas: action.bound,
+      userRepository: observable,
+      // pageInfo: observable,
+      // note信息
+      note: observable,
+      setNote: action.bound,
     });
     // makeObservable(this);
   }
@@ -61,7 +71,7 @@ export class UserStore extends StoreBase {
    */
   @observable
   userData: UserData | SimpleObject = {};
-  @observable client: ApolloClient<any> & any;
+  @observable client: ApolloClient<any> | undefined;
   /** 连接client
    * 设置client
    */
@@ -82,11 +92,56 @@ export class UserStore extends StoreBase {
         Authorization: `Bearer ${githubToken}`,
       },
     });
-    if (this.client) this.client = null;
+    if (this.client) this.client = undefined;
 
     this.client = new ApolloClient({
       link: httpLink,
-      cache: new InMemoryCache(),
+      // cache: new InMemoryCache(),
+      cache: new InMemoryCache({
+        typePolicies: {
+          Query: {
+            fields: {
+              project: {
+                merge(existing, incoming) {
+                  // return incoming;
+                  return { ...existing, ...incoming };
+                },
+              },
+            },
+          },
+          Repository: {
+            fields: {
+              issues: {
+                merge(existing, incoming) {
+                  if (!existing) return incoming;
+                  console.log('existing', existing);
+                  console.log('incoming', incoming);
+                  const edges = incoming.edges ? [...incoming.edges] : [];
+                  // const pageInfo = incoming.pageInfo;
+                  // if (pageInfo && !isLatest) this.pageInfo = pageInfo;
+
+                  if (edges) {
+                    let pageData = [...existing.edges];
+                    if (pageData.length === 0) {
+                      pageData = edges;
+                    } else {
+                      const newEdges = unionBy(
+                        edges.reverse(),
+                        pageData.reverse(),
+                        'node.id',
+                      );
+                      pageData = newEdges.reverse();
+                    }
+                    return { ...incoming, edges: pageData };
+                  }
+                  return incoming;
+                },
+              },
+            },
+            // keyFields: ['id'],
+          },
+        },
+      }),
     });
     return this.client;
   };
@@ -118,10 +173,11 @@ export class UserStore extends StoreBase {
     this.setUserData(userData, false);
   }
   // 更新本地的信息进缓存当中
-  updateData() {
+  updateData(v: any = {}) {
     this.data = {
       ...this.data,
       userData: this.userData,
+      ...v,
     };
   }
 
@@ -137,9 +193,11 @@ export class UserStore extends StoreBase {
    * @memberof UserStore
    */
   spaceDatas: SpaceData[] = [];
-  @observable pageInfo?: PageInfo;
+  @observable spacePageInfo?: PageInfo;
+  @observable spaceVariables: any;
+
   // 仓库名字
-  @observable userRepository?: UserRepository = userRepository;
+  userRepository: UserRepository = userRepository;
 
   setSpaceDatas(data: any) {
     if (!data) {
@@ -148,7 +206,8 @@ export class UserStore extends StoreBase {
     const issues = data?.repository?.issues ?? {};
     const edges = issues.edges ?? [];
     const pageInfo = issues.pageInfo;
-    if (pageInfo) this.pageInfo = pageInfo;
+    if (pageInfo) this.spacePageInfo = pageInfo;
+
     this.mergeSpaceData(edges);
     console.groupCollapsed('handle data');
     console.log(data);
@@ -166,12 +225,27 @@ export class UserStore extends StoreBase {
     const spaceData = this.spaceDatas;
     if (spaceData.length === 0) {
       this.spaceDatas = up;
-      console.log('newDate up', up, this.spaceDatas);
-
       return;
     }
-    const newData = unionBy(up, spaceData, 'node.id');
-    this.spaceDatas = newData;
-    console.log('newDate', newData, this.spaceDatas);
+    const newData = unionBy(up.reverse(), spaceData.reverse(), 'node.id');
+    this.spaceDatas = newData.reverse();
+  }
+  @action.bound
+  setSpaceVariables(variables: any = {}) {
+    this.spaceVariables = {
+      ...this.userRepository,
+      ...variables,
+    };
+  }
+  // 保存的编辑器的信息
+  note: SimpleObject = {
+    title: '',
+    text: '',
+  };
+  // 设置编辑器内容
+  setNote({ title, text, ...rest }: SimpleObject) {
+    title = title ?? this.note.title;
+    text = text ?? this.note.text;
+    this.note = { ...this.note, title, text, ...rest };
   }
 }

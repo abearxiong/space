@@ -6,7 +6,7 @@ import {
   computed,
   autorun,
   toJS,
-  makeObservable,
+  // makeObservable,
 } from 'mobx';
 
 // TODO: 浏览器窗口，部分toJS获取数据，以后删除
@@ -26,7 +26,7 @@ class StoreBase<T = any> {
   Storage = localStorage;
   time = 60 * 60;
   // 缓存当前页面数据
-  @observable data?: SimpleObject & T;
+  @observable data: SimpleObject | T = {};
 
   constructor() {
     // 第一次获取，同时更新获取时间
@@ -90,7 +90,7 @@ class StoreBase<T = any> {
   };
   // 清除缓存
   clearCache = () => {
-    this.data = undefined;
+    this.data = {};
     FormCache.clear(this.SaveName, this.Storage);
   };
   @computed get SaveName() {

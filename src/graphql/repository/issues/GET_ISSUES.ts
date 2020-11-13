@@ -1,5 +1,5 @@
-import { gql } from '@apollo/client';
-export default gql`
+import { DocumentNode, gql } from '@apollo/client';
+const GET_ISSUES: DocumentNode = gql`
   query Issues($owner: String!, $name: String!, $first: Int!, $after: String) {
     repository(owner: $owner, name: $name) {
       issues(
@@ -47,3 +47,5 @@ export default gql`
     }
   }
 `;
+
+export default GET_ISSUES;

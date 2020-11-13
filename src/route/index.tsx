@@ -5,6 +5,7 @@ import { ParentRoute, ChildrenRoute, RouteConfig } from '@/models';
 
 import { HomeRoute } from '../pages/home';
 import { UserRoutes } from '../pages/user';
+import { EditRoute } from '../pages/edit';
 
 // 所有路由，父子路由并存
 let allRoute: RouteConfig[] = [];
@@ -17,7 +18,7 @@ const allRouteName: SimpleObject = {};
 const SigleRoute: ReactNodeArray = [];
 const SigleRouteName: PathRoute[] = [];
 
-allRoute = allRoute.concat([HomeRoute, ...UserRoutes]);
+allRoute = allRoute.concat([HomeRoute, ...UserRoutes, EditRoute]);
 
 export type PathRoute = RouteConfig & {
   noTab?: boolean;

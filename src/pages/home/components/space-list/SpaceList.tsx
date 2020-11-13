@@ -1,18 +1,24 @@
+import { toGithubIssues } from '@/api';
+import { UserRepository } from '@/stores';
 import { Card, List, Tag } from 'antd';
 import React from 'react';
+import { useHistory } from 'react-router-dom';
 import Styles from './SpaceList.scss';
 // import GEmojiElement from '@github/g-emoji-element';
 type Props = {
   issues?: any;
+  repository: UserRepository;
 };
-export const SpaceList = ({ issues }: Props) => {
+export const SpaceList = ({ issues, repository: { owner, name } }: Props) => {
+  const history = useHistory();
   console.groupCollapsed('spaceList');
   console.log('issues', issues);
   console.groupEnd();
   const SpaceListItem = (item: any, index: number) => {
     const v = item.node;
     const toGithubComment = (v?: any) => {
-      //
+      const url = `https://github.com/${owner}/${name}/issues/${v}`;
+      window.open(url);
     };
     const Footer = () => {
       const love = (
@@ -40,7 +46,7 @@ export const SpaceList = ({ issues }: Props) => {
         </div>
       );
       return (
-        <div className={Styles.Footer}>
+        <div className={Styles.Footer} title='默认转到gituhub issues'>
           {love} {reviews}
         </div>
       );
@@ -54,6 +60,27 @@ export const SpaceList = ({ issues }: Props) => {
         </Tag>
       );
     });
+    const More = (
+      <div className={Styles.CardMore} style={{ display: 'flex' }}>
+        <a
+          onClick={() => {
+            const url = toGithubIssues({
+              owner,
+              name,
+              index: item.node.number,
+            });
+            window.open(url);
+          }}
+        >
+          More
+        </a>
+        <a
+          onClick={() => history.push(`/edit/new`, { index: item.node.number })}
+        >
+          Edit
+        </a>
+      </div>
+    );
     return (
       <List.Item>
         <Card
@@ -61,7 +88,7 @@ export const SpaceList = ({ issues }: Props) => {
           style={{ width: '100%' }}
           bordered={true}
           title={v.title}
-          extra={<a href='#'>More</a>}
+          extra={More}
           actions={[<Footer key={v.id} />]}
         >
           <div>{labelTags}</div>

@@ -11,3 +11,12 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+body {
+  :global {
+    #root {
+      height: 100%;
+      margin: 0;
+    }
+  }
+}

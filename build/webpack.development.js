@@ -9,6 +9,7 @@ const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin'
 
 const mode = process.env.ENV;
 
+const port = 3000;
 module.exports = {
   output: {
     path: distDir,
@@ -24,12 +25,13 @@ module.exports = {
     host: '0.0.0.0',
     disableHostCheck: true,
     compress: true,
-    port: 3000,
+    port: port,
     hot: true,
     // open: true,
     onListening: function (server) {
       const port = server.listeningApp.address().port;
       console.log('Listening on port:', port);
+      console.log('http://localhost:' + port);
     },
     // 404 请求都会响应 index.html 的内容
     historyApiFallback: true,

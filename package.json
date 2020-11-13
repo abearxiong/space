@@ -1,5 +1,5 @@
 {
-  "name": "type-tools",
+  "name": "space",
   "version": "0.1.0",
   "private": false,
   "scripts": {
@@ -28,6 +28,7 @@
     "copy-to-clipboard": "^3.3.1",
     "core-js": "^3.7.0",
     "crypto-js": "^3.3.0",
+    "echarts": "^4.9.0",
     "graphql": "^15.4.0",
     "lodash-es": "^4.17.15",
     "mobx": "^6.0.3",
