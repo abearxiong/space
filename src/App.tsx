@@ -11,7 +11,7 @@ import { UseRequestProvider } from 'ahooks';
 import Result from 'antd/lib/result';
 import { Button } from 'antd';
 import Routes, { SinglePageRoutes } from './route';
-
+import { Layout } from '@/layouts/Layouts';
 if (process.env.MOCK) {
   console.log('引入mockjs');
   require('./mockjs');
@@ -36,7 +36,9 @@ const App = () => {
         <Router>
           <Suspense fallback={<div>加载中...</div>}>
             <Switch>
-              <Routes />
+              <Layout>
+                <Routes />
+              </Layout>
               {SinglePageRoutes.map((item) => {
                 // console.log('route', item);
                 return (

@@ -15,6 +15,7 @@ export default gql`
         bodyHTML
         body
         createdAt
+        state
         labels(first: $first, after: $after) {
           edges {
             node {

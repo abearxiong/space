@@ -1,12 +1,22 @@
+import { LOGIN_USER } from './../../graphql/user/LOGIN_USER';
 import { message } from 'antd';
 import { StoreBase } from '@/models';
-import { observable, action, makeObservable } from 'mobx';
+import { observable, action, makeObservable, computed } from 'mobx';
 import { USERINFO, UserData } from './userinfo';
 import { ApolloClient, InMemoryCache, HttpLink } from '@apollo/client';
 // import CryptoJS from 'crypto-js';
 // const CryptoJS = require('crypto-js');
 import { encrypt, decrypt } from '@/utils/crypto';
 import { unionBy } from 'lodash-es';
+
+// 默认配置的token，权限只有查看公共的库。
+// 个人的token，登录更改
+// sxiongxiao
+// aOTlkW6kabeSzhohDeKAZJz/HT9Ws7/MordiD83KYAK6ijOsaLMDXnzo2YmAEhNN
+// abearxiong
+// bt1247BD3B5C3UHkZQlzSDHN5IAIPPg1WpdOFvlfRhS/Mu1A5Ozn1x6xeRiKOymI
+const defaultToken =
+  'aOTlkW6kabeSzhohDeKAZJz/HT9Ws7/MordiD83KYAK6ijOsaLMDXnzo2YmAEhNN';
 
 export type UserInfo = UserData;
 export type PageInfo = {
@@ -28,50 +38,59 @@ export type SpaceData = {
 export type UserRepository = {
   name: string; // 仓库名字
   owner: string; // 仓库拥有者
+  canWrite: boolean; // 能否写入
 } & SimpleObject;
 
 const userRepository: UserRepository = {
   owner: 'abearxiong', // 仓库拥有者
   name: 'abearxiong.github.io', // 仓库名字
   repositoryId: 'MDEwOlJlcG9zaXRvcnkxMjM4ODY3NzE=',
+  canWrite: true,
 };
 export class UserStore extends StoreBase {
   @observable name = USERINFO;
   @observable key = 'xx-space';
-  // 缓存两天
-  @observable time = 2 * 24 * 60 * 60;
+  @observable time = 365 * 24 * 60 * 60;
 
   constructor() {
     super();
     this.getCache();
+
     this.getSave();
+
     this.connect();
+
     this.setCache();
     makeObservable(this, {
-      spaceDatas: observable,
-      setSpaceDatas: action.bound,
       userRepository: observable,
+      setUserRepository: action.bound,
       // pageInfo: observable,
-      // note信息
-      note: observable,
-      setNote: action.bound,
+      userData: observable,
+      isShowSetting: observable,
+      setIsShowSetting: action.bound,
     });
     // makeObservable(this);
   }
 
-  // 默认配置的token，权限只有查看公共的库。
-  // 个人的token，登录更改
-  @observable token =
-    'bt1247BD3B5C3UHkZQlzSDHN5IAIPPg1WpdOFvlfRhS/Mu1A5Ozn1x6xeRiKOymI';
+  @observable token = defaultToken;
 
   @observable client_id = 'ccf21c3104b11fcd9219';
   @observable client_id_local = '6d1f0f1a67b21e729050'; //  xx-space-local-dev
+  // @observable client_sercret = ''
   /**1
    * 登陆用户的用户信息
    */
-  @observable
-  userData: UserData | SimpleObject = {};
+  @observable userData: UserData | SimpleObject = {};
+  isShowSetting = false;
+  setIsShowSetting(v: boolean) {
+    this.isShowSetting = v;
+  }
   @observable client: ApolloClient<any> | undefined;
+  @computed get variables() {
+    return {
+      ...this.userRepository,
+    };
+  }
   /** 连接client
    * 设置client
    */
@@ -143,6 +162,15 @@ export class UserStore extends StoreBase {
         },
       }),
     });
+    this.client
+      .query({
+        query: LOGIN_USER,
+      })
+      .then((res) => {
+        if (res.data && res.data.viewer) {
+          this.userData = res.data.viewer;
+        }
+      });
     return this.client;
   };
   @action.bound
@@ -159,6 +187,12 @@ export class UserStore extends StoreBase {
   @action.bound
   setToken(token: string) {
     this.token = encrypt(token, this.key);
+    this.updateData();
+    // token 更新重新连接
+    this.connect();
+  }
+  @computed get GithubToken() {
+    return decrypt(this.token, this.key);
   }
   @action.bound
   setUserData(v: UserData, update = true) {
@@ -167,16 +201,26 @@ export class UserStore extends StoreBase {
   }
 
   // 获取缓存信息
+  @action.bound
   getSave() {
     const data: any = this.data;
-    const { userData = {} } = data;
+    const { userData = {}, userRepository, token } = data;
     this.setUserData(userData, false);
+    if (userRepository) {
+      this.setUserRepository(userRepository, false);
+    }
+    if (token) {
+      this.token = encrypt(token, this.key);
+    }
   }
   // 更新本地的信息进缓存当中
+  @action.bound
   updateData(v: any = {}) {
     this.data = {
       ...this.data,
       userData: this.userData,
+      userRepository: this.userRepository,
+      token: decrypt(this.token, this.key),
       ...v,
     };
   }
@@ -185,67 +229,16 @@ export class UserStore extends StoreBase {
   @action.bound
   clearUserinfo() {
     this.userData = {};
+    this.setToken(decrypt(defaultToken, this.key));
+    this.userRepository = userRepository;
     this.clearCache();
   }
-  /**
-   * 处理用户获取的库的数据
-   * @type {any[]}
-   * @memberof UserStore
-   */
-  spaceDatas: SpaceData[] = [];
-  @observable spacePageInfo?: PageInfo;
-  @observable spaceVariables: any;
 
+  // 显示仓库信息
   // 仓库名字
   userRepository: UserRepository = userRepository;
-
-  setSpaceDatas(data: any) {
-    if (!data) {
-      message.error('获取数据错误');
-    }
-    const issues = data?.repository?.issues ?? {};
-    const edges = issues.edges ?? [];
-    const pageInfo = issues.pageInfo;
-    if (pageInfo) this.spacePageInfo = pageInfo;
-
-    this.mergeSpaceData(edges);
-    console.groupCollapsed('handle data');
-    console.log(data);
-    console.log(issues);
-    console.log(edges);
-    console.groupEnd();
-  }
-  @action.bound
-  clearSpaceDatas() {
-    this.spaceDatas = [];
-  }
-  @action.bound
-  mergeSpaceData(up?: any[]) {
-    if (!up) return;
-    const spaceData = this.spaceDatas;
-    if (spaceData.length === 0) {
-      this.spaceDatas = up;
-      return;
-    }
-    const newData = unionBy(up.reverse(), spaceData.reverse(), 'node.id');
-    this.spaceDatas = newData.reverse();
-  }
-  @action.bound
-  setSpaceVariables(variables: any = {}) {
-    this.spaceVariables = {
-      ...this.userRepository,
-      ...variables,
-    };
-  }
-  // 保存的编辑器的信息
-  note: SimpleObject = {
-    title: '',
-    text: '',
-  };
-  // 设置编辑器内容
-  setNote({ title, text, ...rest }: SimpleObject) {
-    title = title ?? this.note.title;
-    text = text ?? this.note.text;
-    this.note = { ...this.note, title, text, ...rest };
+  setUserRepository(v: any, update = true) {
+    this.userRepository = { ...userRepository, ...v };
+    update && this.updateData();
   }
 }

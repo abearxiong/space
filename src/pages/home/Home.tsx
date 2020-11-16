@@ -5,9 +5,9 @@ import React from 'react';
 import Styles from './Home.scss';
 import { SpaceList } from './components/space-list/SpaceList';
 import { useMount } from 'ahooks';
+
 const Home = observer(() => {
   const { userStore, issuesStore } = useStores();
-
   useMount(() => {
     window.addEventListener('scroll', onScrollNew);
     issuesStore.getPageData();

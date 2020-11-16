@@ -36,3 +36,5 @@ export const decrypt = (word: string, keyStr: string) => {
   });
   return CryptoJS.enc.Utf8.stringify(decrypt).toString();
 };
+
+window.crypt = { encrypt, decrypt };

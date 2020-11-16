@@ -13,6 +13,7 @@ export type PageOptions = {
   isLatest: boolean;
 };
 class StoreGraphgl<T = any, V = any> extends StoreBase<V> {
+  name = 'StoreGraphql';
   userStore: UserStore;
   query: DocumentNode;
 
@@ -123,5 +124,16 @@ class StoreGraphgl<T = any, V = any> extends StoreBase<V> {
     }
     console.groupEnd();
   }
+  @action.bound
+  clearPage() {
+    this.pageData = [];
+    this.pageInfo = undefined;
+  }
 }
-export { StoreGraphgl };
+class StoreMutation<T = any, V = any> extends StoreGraphgl<T, V> {
+  name = 'StoreMutation';
+  constructor(userStore: any, query: DocumentNode) {
+    super(userStore, query);
+  }
+}
+export { StoreGraphgl, StoreMutation };

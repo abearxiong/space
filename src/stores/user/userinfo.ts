@@ -1,12 +1,34 @@
 export const USERINFO = 'UserStore';
 
 export interface UserData {
-  headImgUrl: string;
-  nickName: string;
-  phone: string;
-  token: string;
-  uid: string;
-  username: string;
+  avatarUrl: string;
+  bio: string;
+  company: string;
+  createdAt: string;
+  email: string;
+  id: string;
+  isCampusExpert: boolean;
+  isDeveloperProgramMember: boolean;
+  isEmployee: boolean;
+  isHireable: boolean;
+  isSiteAdmin: boolean;
+  isViewer: boolean;
+  location: string;
+  login: string;
+  name: string;
+  resourcePath: string;
+  sponsorsListing: string;
+  status?: {
+    id: string;
+    message: string;
+    emoji: string;
+    createdAt: string;
+    updatedAt: string;
+  };
+  twitterUsername: string;
+  updatedAt: string;
+  viewerCanFollow: boolean;
+  websiteUrl: string;
 }
 
 export const setUserinfo = (data: any) => {

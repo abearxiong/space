@@ -6,6 +6,7 @@ import {
   computed,
   autorun,
   toJS,
+  makeObservable,
   // makeObservable,
 } from 'mobx';
 
@@ -35,7 +36,10 @@ class StoreBase<T = any> {
       this.getCache();
       this.setCache();
     }
-    // makeObservable(this);
+    makeObservable(this, {
+      data: observable,
+      setData: action.bound,
+    });
     // console.log('storeBase constructor', this.SaveName);
   }
   /**
@@ -43,6 +47,7 @@ class StoreBase<T = any> {
    * @param data
    * @param options: isSet=true是直接覆盖
    */
+  @action.bound
   setData(data: any, { isSet = false }: any = {}) {
     if (isSet) {
       this.data = data;
@@ -57,7 +62,7 @@ class StoreBase<T = any> {
   @computed get dataToString() {
     return JSON.stringify(this.data);
   }
-  @observable dispose?: () => any;
+  @observable dispose: () => any = () => false;
   // 自动缓存
   autoCache = () => {
     // console.groupCollapsed(this.SaveName + ' cache ' + this.name);
@@ -86,7 +91,7 @@ class StoreBase<T = any> {
   cancelCache = () => {
     // 如果具有自动缓存，取消缓存
     this.dispose && this.dispose();
-    this.dispose = undefined;
+    this.dispose = () => false;
   };
   // 清除缓存
   clearCache = () => {

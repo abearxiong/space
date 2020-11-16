@@ -14,3 +14,5 @@ export const GET_LABELS = GET_LABELS_EXPORT;
 export const ADD_ISSUE = ADD_ISSUE_EXPORT;
 export const ADD_ISSUE_COMMENT = ADD_ISSUE_COMMENT_EXPORT;
 export const UPDATE_ISSUE = UPDATE_ISSUE_EXPORT;
+
+export * from './user';
