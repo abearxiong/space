@@ -1,7 +1,8 @@
 import { useMount } from 'ahooks';
 import React, { useEffect, useRef } from 'react';
-import echarts from 'echarts';
+// import echarts from 'echarts';
 
+const echarts: any = '';
 type Props = {
   option: any;
   style?: React.CSSProperties;

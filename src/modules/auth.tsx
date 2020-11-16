@@ -20,7 +20,7 @@ const Auth: FC<Props> = (props: Props): any => {
     const code = r[2];
     localStorage.setItem('InvitationCode', code);
   }
-  if (!userData.token && !authPages.includes(pathname)) {
+  if (!userData && !authPages.includes(pathname)) {
     history.push('/login');
     return null;
   } else {

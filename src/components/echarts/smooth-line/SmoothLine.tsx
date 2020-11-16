@@ -1,7 +1,8 @@
 import { useMount } from 'ahooks';
 import React, { useEffect, useRef } from 'react';
-import echarts from 'echarts';
+// import echarts from 'echarts';
 
+const echarts: any = '';
 const options = {
   xAxis: {
     type: 'category',
@@ -22,6 +23,7 @@ const options = {
 type Props = {
   //
 };
+
 export const SmoothLine = (props: Props) => {
   const LineRef = useRef(null);
   let chartInstance: any = null;

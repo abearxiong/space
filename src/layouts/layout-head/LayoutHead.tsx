@@ -32,6 +32,13 @@ export const LayoutHead = observer(() => {
       >
         新建页面
       </Menu.Item>
+      <Menu.Item
+        onClick={() => {
+          window.open('https://github.com/abearxiong/space');
+        }}
+      >
+        star github
+      </Menu.Item>
     </Menu>
   );
   const UserInfoComm = (
