@@ -87,8 +87,8 @@ export class UserStore extends StoreBase {
       client_id = this.client_id;
     }
     const a = GithubToken({
-      proxyUrl: 'http://message.xiongxiao.me/cors/',
-      // useQueryUrl: true,
+      // proxyUrl: 'http://message.xiongxiao.me/cors/',
+      useQueryUrl: true,
       client_id,
     });
     if (login) {
