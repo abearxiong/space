@@ -52,8 +52,13 @@ const Edit = observer(() => {
         ace.setValue(issue.body);
         form.setFieldsValue({ title: issue.title });
       } else {
-        const title = newXionTitle();
-        form.setFieldsValue({ title });
+        if (
+          userStore.userData.name === 'abearxiong' ||
+          userStore.userData.name === '熊潇'
+        ) {
+          const title = newXionTitle();
+          form.setFieldsValue({ title });
+        }
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

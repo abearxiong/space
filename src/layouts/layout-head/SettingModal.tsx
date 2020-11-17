@@ -5,7 +5,7 @@ import { ModalWrapper } from '@/components';
 import { observer } from 'mobx-react';
 import { Button, Checkbox, Form, Input, message, Tabs, Tooltip } from 'antd';
 import { useForm } from 'antd/lib/form/Form';
-import { useHistory } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 
 const { TabPane } = Tabs;
 
@@ -40,12 +40,17 @@ export const SettingModal = observer(() => {
   };
   const isGuest = userStore.userData.name === 'abearxiong';
   const toGetRepositoryIdTitle = '获取仓库id方式';
-  const toGetRepositoryId = () => {
-    window.open('/repository');
-  };
+  // const toGetRepositoryId = () => {
+  //   window.open('/repository');
+  // };
   useEffect(() => {
-    if (formUser && userStore.userData) {
-      formUser.setFieldsValue({ user: userStore.userData });
+    if (userStore.userData) {
+      const setFormUser = () => {
+        // formUser.setFieldsValue({ user: userStore.userData });
+      };
+      setTimeout(() => {
+        setFormUser();
+      }, 3000);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userStore.userData]);
@@ -55,7 +60,7 @@ export const SettingModal = observer(() => {
         form={formUser}
         onFinish={onUserFinish}
         onValuesChange={onUserChange}
-        // initialValues={{ user: userStore.userData }}
+        initialValues={{ user: userStore.userData }}
       >
         <Form.Item
           name={['user', 'name']}
@@ -170,9 +175,16 @@ export const SettingModal = observer(() => {
         <Form.Item
           name={['userRepository', 'repositoryId']}
           label={
-            <a onClick={toGetRepositoryId} title={toGetRepositoryIdTitle}>
+            // <a onClick={toGetRepositoryId} title={toGetRepositoryIdTitle}>
+            // </a>
+            <Link
+              key={'index'}
+              to={'/repository'}
+              target='_blank'
+              title={toGetRepositoryIdTitle}
+            >
               仓库id
-            </a>
+            </Link>
           }
           tooltip={toGetRepositoryIdTitle}
           labelCol={{ span: 4 }}

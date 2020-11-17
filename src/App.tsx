@@ -1,7 +1,7 @@
 import React, { Suspense } from 'react';
 import {
-  // BrowserRouter as Router,
-  HashRouter as Router,
+  BrowserRouter as Router,
+  // HashRouter as Router,
   Switch,
   Route,
   useHistory,
@@ -34,7 +34,7 @@ const App = () => {
           throwOnError: true,
         }}
       >
-        <Router>
+        <Router basename='/space'>
           <Suspense fallback={<div>加载中...</div>}>
             <Switch>
               <Layout>
