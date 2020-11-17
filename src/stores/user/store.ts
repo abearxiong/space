@@ -86,15 +86,17 @@ export class UserStore extends StoreBase {
     } else {
       client_id = this.client_id;
     }
+    // client_id = this.client_id;
     const a = GithubToken({
-      // proxyUrl: 'http://message.xiongxiao.me/cors/',
+      proxyUrl: 'http://message.xiongxiao.me/cors/',
       useQueryUrl: true,
       client_id,
     });
     if (login) {
       a.logout();
     }
-    if (a.isNext() || login) {
+    const isNext = a.isNext();
+    if (isNext || login) {
       a.auto().then((res) => {
         const token = a.getToken();
         if (token) {
@@ -105,7 +107,13 @@ export class UserStore extends StoreBase {
             history.push('/space/');
           }, 2000);
         } else {
-          this.postCode();
+          // this.postCode();
+          if (isNext) {
+            message.error('登录失败，请重新登陆');
+            setTimeout(() => {
+              history.push('/space/');
+            }, 3000);
+          }
         }
       });
     }
