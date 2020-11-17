@@ -8,7 +8,8 @@ import { ApolloClient, InMemoryCache, HttpLink } from '@apollo/client';
 // const CryptoJS = require('crypto-js');
 import { encrypt, decrypt } from '@/utils/crypto';
 import { unionBy } from 'lodash-es';
-
+import { GithubToken } from 'think-space-oauth';
+import { history } from '@/utils';
 // 默认配置的token，权限只有查看公共的库。
 // 个人的token，登录更改
 // sxiongxiao
@@ -77,6 +78,39 @@ export class UserStore extends StoreBase {
   @observable client_id = 'ccf21c3104b11fcd9219';
   @observable client_id_local = '6d1f0f1a67b21e729050'; //  xx-space-local-dev
   // @observable client_sercret = ''
+  @action.bound
+  postCode(login = false) {
+    let client_id;
+    if (location.href.match(/localhost/)) {
+      client_id = this.client_id_local;
+    } else {
+      client_id = this.client_id;
+    }
+    const a = GithubToken({
+      proxyUrl: 'http://message.xiongxiao.me/cors/',
+      // useQueryUrl: true,
+      client_id,
+    });
+    if (login) {
+      a.logout();
+    }
+    if (a.isNext() || login) {
+      a.auto().then((res) => {
+        const token = a.getToken();
+        if (token) {
+          this.setToken(token);
+          message.success('登录成功');
+          setTimeout(() => {
+            //uitls的需要绑定 createHistory
+            history.push('/space/');
+          }, 2000);
+        } else {
+          this.postCode();
+        }
+      });
+    }
+  }
+
   /**1
    * 登陆用户的用户信息
    */

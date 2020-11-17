@@ -93,7 +93,7 @@ export const SettingModal = observer(() => {
                 当前用户为游客，请登录自己账号
                 <Button
                   onClick={() => {
-                    history.push('/login');
+                    userStore.postCode(true);
                   }}
                 >
                   登录
@@ -105,7 +105,7 @@ export const SettingModal = observer(() => {
                 <Button
                   type='primary'
                   onClick={() => {
-                    history.push('/login');
+                    userStore.postCode(true);
                   }}
                 >
                   切换用户

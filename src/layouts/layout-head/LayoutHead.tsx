@@ -7,10 +7,15 @@ import { useStores } from '@/hooks/user-stores';
 import Styles from './LayoutHead.scss';
 import { SettingModal } from './SettingModal';
 import { useHistory } from 'react-router-dom';
+import { useMount } from 'ahooks';
 
 export const LayoutHead = observer(() => {
   const { userStore } = useStores();
   const history = useHistory();
+  useMount(() => {
+    userStore.postCode();
+  });
+
   const avatar = (
     <Avatar src={userStore.userData.avatarUrl} style={{ marginRight: 5 }} />
   );
