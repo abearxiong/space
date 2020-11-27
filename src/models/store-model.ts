@@ -155,7 +155,6 @@ class StorePage<T = any, S = SimpleObject, V = any> extends StoreBase<V> {
     }
     const formData = this.formData;
     this.formData = { ...formData, ...payload };
-    // console.log('set', this.formData);
   }
   @action.bound
   defaultFormData() {

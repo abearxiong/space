@@ -12,6 +12,7 @@ import { useMount } from 'ahooks';
 export const LayoutHead = observer(() => {
   const { userStore } = useStores();
   const history = useHistory();
+  window.h = history;
   useMount(() => {
     userStore.postCode();
   });

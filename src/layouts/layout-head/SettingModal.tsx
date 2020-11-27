@@ -5,7 +5,7 @@ import { ModalWrapper } from '@/components';
 import { observer } from 'mobx-react';
 import { Button, Checkbox, Form, Input, message, Tabs, Tooltip } from 'antd';
 import { useForm } from 'antd/lib/form/Form';
-import { Link, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 
 const { TabPane } = Tabs;
 
@@ -177,14 +177,16 @@ export const SettingModal = observer(() => {
           label={
             // <a onClick={toGetRepositoryId} title={toGetRepositoryIdTitle}>
             // </a>
-            <Link
-              key={'index'}
-              to={'/repository'}
+            <a
+              onClick={() => {
+                history.push('/repository');
+                userStore.setIsShowSetting(false);
+              }}
               target='_blank'
               title={toGetRepositoryIdTitle}
             >
               仓库id
-            </Link>
+            </a>
           }
           tooltip={toGetRepositoryIdTitle}
           labelCol={{ span: 4 }}
