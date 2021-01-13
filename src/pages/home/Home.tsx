@@ -10,7 +10,9 @@ const Home = observer(() => {
   const { userStore, issuesStore } = useStores();
   useMount(() => {
     window.addEventListener('scroll', onScrollNew);
-    issuesStore.getPageData();
+    if (issuesStore.pageData.length <= 0) {
+      issuesStore.getPageData();
+    }
   });
 
   const onScrollNew = () => {

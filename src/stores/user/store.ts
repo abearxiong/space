@@ -222,8 +222,7 @@ export class UserStore extends StoreBase {
       return '';
     }
     const setToken = decrypt(this.token, this.key);
-    // return '86c5916da4c66dc5108797bff15a5c27ca65fb2c';
-    // console.log(encrypt('86c5916da4c66dc5108797bff15a5c27ca65fb2c', this.key));
+    console.log('setToken', setToken, this.token);
     return setToken;
   }
   @action.bound

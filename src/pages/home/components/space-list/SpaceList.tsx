@@ -21,6 +21,7 @@ export const SpaceList = ({ issues, repository: { owner, name } }: Props) => {
       window.open(url);
     };
     const Footer = () => {
+      // 若刚建立，则不处理
       const love = (
         <div onClick={() => toGithubComment(item.node.number)}>
           <g-emoji
@@ -30,7 +31,7 @@ export const SpaceList = ({ issues, repository: { owner, name } }: Props) => {
           >
             ❤️
           </g-emoji>
-          {item.node.reactions.totalCount}
+          {item.node?.reactions?.totalCount}
         </div>
       );
       const reviews = (
@@ -42,7 +43,7 @@ export const SpaceList = ({ issues, repository: { owner, name } }: Props) => {
           >
             💬
           </g-emoji>
-          {item.node.comments.totalCount}
+          {item.node?.comments?.totalCount}
         </div>
       );
       return (

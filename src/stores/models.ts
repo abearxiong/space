@@ -20,7 +20,6 @@ class StoreGraphgl<T = any, V = any> extends StoreBase<V> {
   loading?: boolean;
   networkStatus?: any;
   pageInfo?: PageInfo;
-  // @observable pageData: T[] = [];
   pageData: T[] = [];
   variables: any = { first: 10 };
 
@@ -43,7 +42,6 @@ class StoreGraphgl<T = any, V = any> extends StoreBase<V> {
       ...this.variables,
       ...variables,
     };
-    console.log('variable', variables);
     if (variables && (variables as PageInfo).endCursor) {
       newVariables.after = (variables as PageInfo).endCursor;
     }
@@ -128,6 +126,10 @@ class StoreGraphgl<T = any, V = any> extends StoreBase<V> {
   clearPage() {
     this.pageData = [];
     this.pageInfo = undefined;
+  }
+  @action.bound
+  addPage(data: T) {
+    this.pageData = [data, ...this.pageData];
   }
 }
 class StoreMutation<T = any, V = any> extends StoreGraphgl<T, V> {

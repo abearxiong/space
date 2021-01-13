@@ -35,7 +35,7 @@ const Edit = observer(() => {
   const location = useLocation();
   const history = useHistory();
   const editor = useRef<any>(null);
-  const { userStore, editStore, labelsStore } = useStores();
+  const { userStore, editStore, labelsStore, issuesStore } = useStores();
   const [issue, setIssue] = useState<any>();
   const [isShowDrrawer, setIsShowDrrawer] = useState(false);
   useEffect(() => {
@@ -187,6 +187,12 @@ const Edit = observer(() => {
       });
       if (c.data) {
         message.success('提交成功');
+        const page = {
+          node: {
+            ...c.data.createIssue.issue,
+          },
+        };
+        issuesStore.addPage(page);
         setTimeout(() => {
           history.push('/');
         }, 1000);
